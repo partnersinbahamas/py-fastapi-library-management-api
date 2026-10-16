@@ -1,8 +1,43 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+
+from database.engine import SessionLocal
+from database import models
+
+import crud
+import schemas
 
 app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def get_author_by_name(db: SessionLocal, name: str):
+    return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
 
 
 @app.get('/')
 def root():
-    return { "message": "Hello World!" }
+    return { 'message': 'Hello World!' }
+
+
+@app.get('/authors/', response_model=list[schemas.AuthorRead])
+def get_authors(db: SessionLocal = Depends(get_db), skip: int = 0, limit: int = 100):
+    return crud.get_authors(db, skip, limit)
+
+
+@app.post('/authors/', response_model=schemas.AuthorRead)
+def create_author(author: schemas.AuthorCreate, db: SessionLocal = Depends(get_db)):
+    if get_author_by_name(db, author.name):
+        raise HTTPException(status_code=400, detail="Author already exists")
+
+    return crud.create_author(db, author)
+
+@app.get('/authors/{author_id}', response_model=schemas.AuthorRead)
+def get_author_detail(author_id: int, db: SessionLocal = Depends(get_db)):
+    return crud.get_author_detail(db, author_id)
