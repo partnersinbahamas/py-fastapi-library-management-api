@@ -20,3 +20,13 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 def get_author_detail(db: Session, author_id: int):
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+
+
+def create_book(db: Session, book: schemas.BookCreate):
+    db_book = models.DBBook(**book.model_dump())
+
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+
+    return db_book

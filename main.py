@@ -20,6 +20,9 @@ def get_db():
 def get_author_by_name(db: SessionLocal, name: str):
     return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
 
+def get_book_by_title(db: SessionLocal, title: str):
+    return db.query(models.DBBook).filter(models.DBBook.title == title).first()
+
 
 @app.get('/')
 def root():
@@ -41,3 +44,10 @@ def create_author(author: schemas.AuthorCreate, db: SessionLocal = Depends(get_d
 @app.get('/authors/{author_id}', response_model=schemas.AuthorRead)
 def get_author_detail(author_id: int, db: SessionLocal = Depends(get_db)):
     return crud.get_author_detail(db, author_id)
+
+
+@app.post('/books/', response_model=schemas.BookRead)
+def create_book(book: schemas.BookCreate, db: SessionLocal = Depends(get_db)):
+    if get_book_by_title(db, book.title):
+        raise HTTPException(status_code=400, detail="Book already exists")
+    return crud.create_book(db, book)
