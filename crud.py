@@ -30,3 +30,7 @@ def create_book(db: Session, book: schemas.BookCreate):
     db.refresh(db_book)
 
     return db_book
+
+
+def get_books(db: Session, skip: int, limit: int):
+    return db.query(models.DBBook).offset(skip).limit(limit).all()

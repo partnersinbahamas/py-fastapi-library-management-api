@@ -9,8 +9,10 @@ class AuthorBase(BaseModel):
 class AuthorCreate(AuthorBase):
     pass
 
+
 class AuthorRead(AuthorBase):
     id: int
+    books: list["BookRead"] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -24,8 +26,14 @@ class BookCreate(BookBase):
     author_id: int
 
 
+class BookAuthorRead(AuthorBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class BookRead(BookBase):
     id: int
-    author: AuthorRead
+    author: BookAuthorRead
 
     model_config = ConfigDict(from_attributes=True)

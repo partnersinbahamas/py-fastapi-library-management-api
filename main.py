@@ -51,3 +51,8 @@ def create_book(book: schemas.BookCreate, db: SessionLocal = Depends(get_db)):
     if get_book_by_title(db, book.title):
         raise HTTPException(status_code=400, detail="Book already exists")
     return crud.create_book(db, book)
+
+
+@app.get('/books/', response_model=list[schemas.BookRead])
+def get_books(db: SessionLocal = Depends(get_db), skip: int = 0, limit: int = 100):
+    return crud.get_books(db, skip, limit)
