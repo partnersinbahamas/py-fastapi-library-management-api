@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 
-from database.engine import SessionLocal
-from database import models
+from database import SessionLocal
+import models
 
 import crud
 import schemas

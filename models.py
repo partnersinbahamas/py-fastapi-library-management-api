@@ -5,7 +5,7 @@ from sqlalchemy import String, ForeignKey, Date
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.testing.schema import mapped_column
 
-from database.engine import Base
+from database import Base
 
 
 class DBAuthor(Base):
