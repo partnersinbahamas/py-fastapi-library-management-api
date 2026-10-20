@@ -1,6 +1,7 @@
+from datetime import date
 from typing import List
 
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, Date
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.testing.schema import mapped_column
 
@@ -24,3 +25,4 @@ class DBBook(Base):
     summary: Mapped[str] = mapped_column(String(255), nullable=False)
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
     author: Mapped["DBAuthor"] = relationship(back_populates="books")
+    publication_date: Mapped[date] = mapped_column(Date, nullable=True)
